@@ -28,7 +28,7 @@ public class MMedicalFacilitySchedule extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "medical_facility_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private MMedicalFacility mMedicalFacility;
+    private MMedicalFacility medicalFacility;
 
     @Column(name = "day", nullable = true, length = 10)
     private String day;
