@@ -49,6 +49,7 @@ public class DoctorServiceImpl implements DoctorService {
                 DoctorListItemDTO doctorListItemDTO = new DoctorListItemDTO();
                 doctorListItemDTO.setDoctorId(tDoctorOffice.getDoctor().getId());
                 doctorListItemDTO.setDoctorName(tDoctorOffice.getDoctor().getBiodata().getFullName());
+                doctorListItemDTO.setLocationName(tDoctorOffice.getMedicalFacility().getFullAddress());
 
                 List<String> hospitalname = new ArrayList<>();
                 if (tDoctorOffice != null && tDoctorOffice.getMedicalFacility() != null) {

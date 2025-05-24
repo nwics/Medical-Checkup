@@ -32,7 +32,7 @@ public class TToken extends BaseEntity {
     private String email;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private MCustomer customer;
 
     @Column(name = "token", length = 50)

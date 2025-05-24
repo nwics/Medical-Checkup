@@ -17,6 +17,7 @@ public class DoctorListItemDTO {
     private String doctorName;
     private String specialization;
     private Integer yearsOfExperience;
+    private String locationName;
     private List<String> hospitalName;
     private String availibility;
 }
