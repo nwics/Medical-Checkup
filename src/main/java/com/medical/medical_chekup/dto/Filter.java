@@ -1,8 +1,7 @@
 package com.medical.medical_chekup.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,12 +10,11 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DoctorListItemDTO {
+@Builder
+public class Filter {
 
-    private Long doctorId;
+    private String keyword;
+    private String location;
     private String doctorName;
-    private String specialization;
-    private Integer yearsOfExperience;
-    private List<String> hospitalName;
-    private String availibility;
+    private String treatment;
 }
