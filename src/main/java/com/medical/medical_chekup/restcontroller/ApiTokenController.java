@@ -3,6 +3,7 @@ package com.medical.medical_chekup.restcontroller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.medical.medical_chekup.dto.TokenDTO;
 import com.medical.medical_chekup.dto.response.ApiResponse;
 import com.medical.medical_chekup.model.TToken;
 import com.medical.medical_chekup.service.BalanceWithdrawService;
@@ -27,7 +28,7 @@ public class ApiTokenController {
 
     @PostMapping("/create/{customerId}")
     public ResponseEntity<ApiResponse<?>> createToken(@PathVariable Long customerId) {
-        TToken response = balanceWithdrawService.createToken(customerId);
+        TokenDTO response = balanceWithdrawService.createToken(customerId);
         ApiResponse<?> apiResponse = new ApiResponse<>(
                 "success create token", response, LocalDateTime.now(), HttpStatus.OK.value());
         return ResponseEntity.ok(apiResponse);
@@ -36,7 +37,7 @@ public class ApiTokenController {
 
     @GetMapping("/{tokenId}")
     public ResponseEntity<ApiResponse<?>> getTokenId(@PathVariable Long tokenId) {
-        TToken response = balanceWithdrawService.getToken(tokenId);
+        TokenDTO response = balanceWithdrawService.getToken(tokenId);
         ApiResponse<?> apiResponse = new ApiResponse<>("success get token id", response, LocalDateTime.now(),
                 HttpStatus.OK.value());
         return ResponseEntity.ok(apiResponse);

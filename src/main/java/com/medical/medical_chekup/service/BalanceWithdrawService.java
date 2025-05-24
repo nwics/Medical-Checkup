@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.medical.medical_chekup.dto.CustomNominalSaldoDTO;
 import com.medical.medical_chekup.dto.DefaultSaldoDTO;
+import com.medical.medical_chekup.dto.TokenDTO;
 import com.medical.medical_chekup.model.TCustomerCustomNominal;
 import com.medical.medical_chekup.model.TToken;
 
@@ -13,7 +14,7 @@ public interface BalanceWithdrawService {
 
     TCustomerCustomNominal creatCustomerCustomNominal(CustomNominalSaldoDTO customNominal);
 
-    TToken createToken(Long customerId);
+    TokenDTO createToken(Long customerId);
 
-    TToken getToken(Long tokenId);
+    TokenDTO getToken(Long tokenId);
 }

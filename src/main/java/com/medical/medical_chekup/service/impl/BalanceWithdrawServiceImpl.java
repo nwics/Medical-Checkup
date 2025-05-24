@@ -14,6 +14,7 @@ import com.medical.medical_chekup.dao.NominalSaldoRepository;
 import com.medical.medical_chekup.dao.TokenRepository;
 import com.medical.medical_chekup.dto.CustomNominalSaldoDTO;
 import com.medical.medical_chekup.dto.DefaultSaldoDTO;
+import com.medical.medical_chekup.dto.TokenDTO;
 import com.medical.medical_chekup.model.MWalletDefaultNominal;
 import com.medical.medical_chekup.model.TCustomerCustomNominal;
 import com.medical.medical_chekup.model.TToken;
@@ -44,6 +45,20 @@ public class BalanceWithdrawServiceImpl implements BalanceWithdrawService {
         customNominalSaldoDTO.setCustomerId(customerCustomNominal.getCustomer().getId());
         customNominalSaldoDTO.setNominal(BigInteger.valueOf(customerCustomNominal.getNominal()));
         return customNominalSaldoDTO;
+    }
+
+    private TokenDTO mapTokenDTO(TToken tToken) {
+        TokenDTO tokenDTO = new TokenDTO();
+        tokenDTO.setCustomerId(tToken.getCustomer().getId());
+        boolean expired = false;
+        if (LocalDateTime.now().isAfter(tToken.getExpiredOn())) {
+            expired = true;
+        }
+        tokenDTO.setExpired(expired);
+        tokenDTO.setExpiredOn(tToken.getExpiredOn());
+        tokenDTO.setToken(tToken.getToken());
+        return tokenDTO;
+
     }
 
     @Override
@@ -100,7 +115,7 @@ public class BalanceWithdrawServiceImpl implements BalanceWithdrawService {
     }
 
     @Override
-    public TToken createToken(Long customerId) {
+    public TokenDTO createToken(Long customerId) {
         try {
             MCustomer foundCustomer = customerRepository.findById(customerId).orElse(null);
 
@@ -112,7 +127,6 @@ public class BalanceWithdrawServiceImpl implements BalanceWithdrawService {
             newTToken.setCreatedBy(1L);
             newTToken.setCreatedOn(LocalDateTime.now());
             newTToken.setIsDelete(false);
-            // newTToken.setId(11L);
 
             MCustomer customer = new MCustomer();
             customer.setId(customerId);
@@ -124,15 +138,16 @@ public class BalanceWithdrawServiceImpl implements BalanceWithdrawService {
             newTToken.setToken(String.valueOf(randomNum));
             newTToken.setExpiredOn(LocalDateTime.now().plusHours(1));
 
-            TToken saved = tokenRepository.save(newTToken);
-            return saved;
+            tokenRepository.save(newTToken);
+
+            return mapTokenDTO(newTToken);
         } catch (Exception e) {
             throw new RuntimeException("Failed to create token: " + e.getMessage());
         }
     }
 
     @Override
-    public TToken getToken(Long tokenId) {
+    public TokenDTO getToken(Long tokenId) {
         // TODO Auto-generated method stub
         // throw new UnsupportedOperationException("Unimplemented method 'getToken'");
         TToken token = tokenRepository.findById(tokenId).orElse(null);
@@ -140,7 +155,7 @@ public class BalanceWithdrawServiceImpl implements BalanceWithdrawService {
             token.setExpired(true);
             tokenRepository.save(token);
         }
-        return token;
+        return mapTokenDTO(token);
     }
 
 }
