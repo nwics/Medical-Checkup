@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.medical.medical_chekup.dao.CustomNominalCustomerRepository;
 import com.medical.medical_chekup.dao.CustomerRepository;
+import com.medical.medical_chekup.dao.CustomerWalletRepository;
+import com.medical.medical_chekup.dao.CustomerWalletWithdrawRepository;
+// import com.medical.medical_chekup.dao.CustomerWalletWithdraw;
 import com.medical.medical_chekup.dao.NominalSaldoRepository;
 import com.medical.medical_chekup.dao.TokenRepository;
 import com.medical.medical_chekup.dto.CustomNominalSaldoDTO;
@@ -17,6 +20,8 @@ import com.medical.medical_chekup.dto.DefaultSaldoDTO;
 import com.medical.medical_chekup.dto.TokenDTO;
 import com.medical.medical_chekup.model.MWalletDefaultNominal;
 import com.medical.medical_chekup.model.TCustomerCustomNominal;
+import com.medical.medical_chekup.model.TCustomerWallet;
+import com.medical.medical_chekup.model.TCustomerWalletWithdraw;
 import com.medical.medical_chekup.model.TToken;
 import com.medical.medical_chekup.model.MCustomer;
 import com.medical.medical_chekup.service.BalanceWithdrawService;
@@ -31,6 +36,8 @@ public class BalanceWithdrawServiceImpl implements BalanceWithdrawService {
     private final CustomNominalCustomerRepository customNominalCustomerRepository;
     private final TokenRepository tokenRepository;
     private final CustomerRepository customerRepository;
+    private final CustomerWalletRepository customerWalletRepository;
+    private final CustomerWalletWithdrawRepository customerWalletWithdrawRepository;
 
     private DefaultSaldoDTO mapToDTO(MWalletDefaultNominal defaultNominal) {
         DefaultSaldoDTO defaultSaldoDTO = new DefaultSaldoDTO();
@@ -148,14 +155,61 @@ public class BalanceWithdrawServiceImpl implements BalanceWithdrawService {
 
     @Override
     public TokenDTO getToken(Long tokenId) {
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'getToken'");
+
         TToken token = tokenRepository.findById(tokenId).orElse(null);
         if (!token.isExpired() && LocalDateTime.now().isAfter(token.getExpiredOn())) {
             token.setExpired(true);
             tokenRepository.save(token);
         }
         return mapTokenDTO(token);
+    }
+
+    @Override
+    public TCustomerWalletWithdraw BalanceWithdraw(Long customerId, Long walletId) {
+
+        try {
+            TCustomerWallet foundCustomerWallet = customerWalletRepository
+                    .findByCustomerIdAndIsDeleteIsFalse(customerId);
+            if (foundCustomerWallet == null) {
+                throw new RuntimeException("customer wallet not found");
+            }
+            MWalletDefaultNominal foundDefaultNominal = nominalSaldoRepository.findById(walletId).orElse(null);
+            // TCustomerCustomNominal foundCustomNominalCustomer =
+            // customNominalCustomerRepository.findById(walletId).orElse(null);
+            if (foundDefaultNominal == null) {
+                throw new RuntimeException("default nominal not found");
+                // if (condition) {
+
+                // }
+            }
+            TCustomerWalletWithdraw customerWalletWithdraw = new TCustomerWalletWithdraw();
+            customerWalletWithdraw.setBankName("Jago");
+            customerWalletWithdraw.setAccountNumber("919" + customerId + "717");
+            customerWalletWithdraw.setAccountName("ZuZO");
+            Random random = new Random();
+            Integer otp = 100000 + random.nextInt(90000);
+            customerWalletWithdraw.setOtp(otp);
+
+            Integer amount = foundDefaultNominal.getNominal();
+            customerWalletWithdraw.setAmount(amount);
+
+            TCustomerWallet customerWallet = new TCustomerWallet();
+            customerWallet.setBalance(foundCustomerWallet.getBalance() - amount);
+
+            TCustomerWalletWithdraw save = customerWalletWithdrawRepository.save(customerWalletWithdraw);
+            return save;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        // throw new UnsupportedOperationException("Unimplemented method
+        // 'BalanceWithdraw'");
+    }
+
+    @Override
+    public TCustomerWallet checkPinCustomer(Long customerId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'checkPinCustomer'");
     }
 
 }

@@ -9,4 +9,5 @@ import com.medical.medical_chekup.model.MWalletDefaultNominal;
 @Repository
 public interface NominalSaldoRepository extends JpaRepository<MWalletDefaultNominal, Long> {
     List<MWalletDefaultNominal> findAllByIsDeleteIsFalse();
+
 }
