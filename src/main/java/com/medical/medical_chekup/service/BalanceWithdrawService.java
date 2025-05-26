@@ -22,5 +22,5 @@ public interface BalanceWithdrawService {
 
     TCustomerWalletWithdraw BalanceWithdraw(Long customerId, Long walletId);
 
-    TCustomerWallet checkPinCustomer(Long customerId);
+    Boolean checkPinCustomer(Long customerId, String pin);
 }

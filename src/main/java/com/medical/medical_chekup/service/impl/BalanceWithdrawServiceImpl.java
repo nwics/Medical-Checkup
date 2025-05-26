@@ -193,8 +193,10 @@ public class BalanceWithdrawServiceImpl implements BalanceWithdrawService {
             Integer amount = foundDefaultNominal.getNominal();
             customerWalletWithdraw.setAmount(amount);
 
-            TCustomerWallet customerWallet = new TCustomerWallet();
-            customerWallet.setBalance(foundCustomerWallet.getBalance() - amount);
+            // Update the existing wallet's balance
+            foundCustomerWallet.setBalance(foundCustomerWallet.getBalance() - amount);
+            foundCustomerWallet.setModifiedOn(LocalDateTime.now());
+            customerWalletRepository.save(foundCustomerWallet);
 
             TCustomerWalletWithdraw save = customerWalletWithdrawRepository.save(customerWalletWithdraw);
             return save;
@@ -207,9 +209,52 @@ public class BalanceWithdrawServiceImpl implements BalanceWithdrawService {
     }
 
     @Override
-    public TCustomerWallet checkPinCustomer(Long customerId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'checkPinCustomer'");
+    public Boolean checkPinCustomer(Long customerId, String pin) {
+        try {
+            TCustomerWallet foundCustomerWallet = customerWalletRepository
+                    .findByCustomerIdAndIsDeleteIsFalse(customerId);
+            if (foundCustomerWallet == null) {
+                throw new RuntimeException("customer not found");
+            }
+
+            // Initialize pinAttempt if null
+            if (foundCustomerWallet.getPinAttempt() == null) {
+                foundCustomerWallet.setPinAttempt(0);
+            }
+
+            // Check if account is blocked
+            if (foundCustomerWallet.getIsBlocked()) {
+                if (LocalDateTime.now().isBefore(foundCustomerWallet.getBlockEnds())) {
+                    throw new RuntimeException("Account is blocked until " + foundCustomerWallet.getBlockEnds());
+                } else {
+                    // Unblock account if block period has ended
+                    foundCustomerWallet.setIsBlocked(false);
+                    foundCustomerWallet.setPinAttempt(0);
+                    foundCustomerWallet.setBlockEnds(null);
+                }
+            }
+
+            // Handle PIN verification
+            if (!foundCustomerWallet.getPin().equals(pin)) {
+                Integer pinAttempt = foundCustomerWallet.getPinAttempt() + 1;
+                foundCustomerWallet.setPinAttempt(pinAttempt);
+
+                if (pinAttempt >= 3) {
+                    foundCustomerWallet.setIsBlocked(true);
+                    foundCustomerWallet.setBlockEnds(LocalDateTime.now().plusDays(7));
+                }
+
+                customerWalletRepository.save(foundCustomerWallet);
+                return false;
+            }
+
+            // Reset PIN attempts on successful verification
+            foundCustomerWallet.setPinAttempt(0);
+            customerWalletRepository.save(foundCustomerWallet);
+            return true;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
 }

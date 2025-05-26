@@ -27,11 +27,11 @@ public class TCustomerWalletWithdraw {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private MCustomer customer;
 
     @ManyToOne
-    @JoinColumn(name = "wallet_default_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "wallet_default_id", referencedColumnName = "id")
     private MWalletDefaultNominal walletDefault;
 
     @Column(name = "amount", nullable = false)

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,11 +14,14 @@ import com.medical.medical_chekup.dto.CustomNominalSaldoDTO;
 import com.medical.medical_chekup.dto.DefaultSaldoDTO;
 import com.medical.medical_chekup.dto.response.ApiResponse;
 import com.medical.medical_chekup.model.TCustomerCustomNominal;
+import com.medical.medical_chekup.model.TCustomerWalletWithdraw;
 import com.medical.medical_chekup.service.BalanceWithdrawService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/balance-withdraw")
@@ -48,6 +52,24 @@ public class ApiBalanceWithdrawController {
         apiResponse.setData(response);
         apiResponse.setStatuscode(HttpStatus.OK.value());
         apiResponse.setTimestamp(LocalDateTime.now());
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @PostMapping("/{customerId}/{walletId}")
+    public ResponseEntity<ApiResponse<?>> balanceWithdrawCustomer(@PathVariable Long customerId,
+            @PathVariable Long walletId) {
+        TCustomerWalletWithdraw response = balanceWithdrawService.BalanceWithdraw(customerId, walletId);
+        ApiResponse<?> apiResponse = new ApiResponse<>(
+                "success balance withdraw", response, LocalDateTime.now(), HttpStatus.OK.value());
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @PutMapping("/check-pin/{customerId}")
+    public ResponseEntity<ApiResponse<Boolean>> cekPinCustomer(@PathVariable Long customerId,
+            @RequestParam String pin) {
+        Boolean result = balanceWithdrawService.checkPinCustomer(customerId, pin);
+        ApiResponse<Boolean> apiResponse = new ApiResponse<>("success get pin", result, LocalDateTime.now(),
+                HttpStatus.OK.value());
         return ResponseEntity.ok(apiResponse);
     }
 
