@@ -27,14 +27,14 @@ public class MCustomerMember extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "parent_biodata_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "parent_biodata_id", referencedColumnName = "id")
     private MBiodata mBiodata;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private MCustomer mCustomer;
 
     @ManyToOne
-    @JoinColumn(name = "customer_relation_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "customer_relation_id", referencedColumnName = "id")
     private MCustomerRelation mCustomerRelation;
 }

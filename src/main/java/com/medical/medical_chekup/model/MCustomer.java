@@ -30,7 +30,7 @@ public class MCustomer extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "biodata_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "biodata_id")
     private MBiodata mBiodata;
 
     @Column(name = "dob")
@@ -40,7 +40,7 @@ public class MCustomer extends BaseEntity {
     private String gender;
 
     @ManyToOne
-    @JoinColumn(name = "blood_group_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "blood_group_id")
     private MBloodGroup mBloodGroup;
 
     @Column(name = "rhesus_type")
