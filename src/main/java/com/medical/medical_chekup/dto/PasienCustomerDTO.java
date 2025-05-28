@@ -15,8 +15,8 @@ import lombok.Setter;
 public class PasienCustomerDTO {
 
     private Long biodataId;
-    // private String pasienName;
-    // private String golonganDarah;
+    private String pasienName;
+    private String golonganDarah;
     private Long golonganDarahId;
     private String rhesusType;
     private String gender;

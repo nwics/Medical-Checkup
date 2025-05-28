@@ -52,6 +52,8 @@ public class PasienServiceImpl implements PasienService {
     private PasienCustomerDTO mapToDto(MCustomer mCustomer) {
         PasienCustomerDTO pasienCustomerDTO = new PasienCustomerDTO();
         pasienCustomerDTO.setBiodataId(mCustomer.getMBiodata().getId());
+        pasienCustomerDTO.setPasienName(mCustomer.getMBiodata().getFullName());
+        pasienCustomerDTO.setGolonganDarah(mCustomer.getMBloodGroup().getCode());
         pasienCustomerDTO.setGender(mCustomer.getGender());
         pasienCustomerDTO.setRhesusType(mCustomer.getRhesusType());
         pasienCustomerDTO.setHeight(mCustomer.getHeight());
@@ -172,5 +174,76 @@ public class PasienServiceImpl implements PasienService {
             // TODO: handle exception
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    @Override
+    public MCustomer editCustomer(Long customerId, PasienCustomerDTO pasienCustomerDTO) {
+        // TODO Auto-generated method stub
+        try {
+            MCustomer foundCustomer = pasienCustomerRepository.findById(customerId).orElse(null);
+            if (foundCustomer == null) {
+                throw new RuntimeException("customer not found");
+            }
+            MCustomer customer = foundCustomer;
+            customer.setModifiedBy(1L);
+            customer.setModifiedOn(LocalDateTime.now());
+            customer.setDob(pasienCustomerDTO.getDob());
+            customer.setGender(pasienCustomerDTO.getGender());
+            customer.setRhesusType(pasienCustomerDTO.getRhesusType());
+            customer.setWeight(pasienCustomerDTO.getWeight());
+            customer.setHeight(pasienCustomerDTO.getHeight());
+
+            MBiodata foundBiodata = biodataRepository.findById(pasienCustomerDTO.getBiodataId()).orElse(null);
+            if (foundBiodata == null) {
+                throw new RuntimeException("biodata not found");
+            }
+            MBiodata biodata = foundBiodata;
+            if (pasienCustomerDTO.getPasienName() != null) {
+                foundBiodata.setFullName(pasienCustomerDTO.getPasienName());
+            }
+            biodata.setModifiedOn(LocalDateTime.now());
+            biodata.setModifiedBy(1L);
+            biodataRepository.save(biodata);
+            customer.setMBiodata(biodata);
+
+            MBloodGroup foundBloodGroup = golonganDarahRepository.findById(pasienCustomerDTO.getGolonganDarahId())
+                    .orElse(null);
+            if (foundBloodGroup == null) {
+                throw new RuntimeException("blood group not found");
+            }
+            if (pasienCustomerDTO.getGolonganDarah() != null) {
+                foundBloodGroup.setCode(pasienCustomerDTO.getGolonganDarah());
+            }
+            foundBloodGroup.setModifiedBy(1L);
+            foundBloodGroup.setModifiedOn(LocalDateTime.now());
+            golonganDarahRepository.save(foundBloodGroup);
+
+            customer.setMBloodGroup(foundBloodGroup);
+
+            this.pasienCustomerRepository.save(customer);
+            return customer;
+        } catch (Exception e) {
+            // TODO: handle exception
+            throw new RuntimeException(e.getMessage());
+        }
+        // throw new UnsupportedOperationException("Unimplemented method
+        // 'editCustomer'");
+    }
+
+    @Override
+    public void deleteMultipleCustomer(List<Long> customerId) {
+        try {
+            List<MCustomer> mCustomers = pasienCustomerRepository.findAllById(customerId);
+            mCustomers.forEach(customer -> {
+                customer.setDeletedBy(1L);
+                customer.setIsDelete(true);
+                customer.setDeletedOn(LocalDateTime.now());
+            });
+            pasienCustomerRepository.saveAll(mCustomers);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        // throw new UnsupportedOperationException("Unimplemented method
+        // 'deleteMultipleCustomer'");
     }
 }

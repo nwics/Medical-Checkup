@@ -13,13 +13,17 @@ import com.medical.medical_chekup.service.PasienService;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/api/pasien")
@@ -44,6 +48,31 @@ public class ApiPasienController {
 
         return ResponseEntity.ok(response);
 
+    }
+
+    @PutMapping("edit/{customerId}")
+    public ResponseEntity<ApiResponse<?>> updateDataPasien(@PathVariable Long customerId,
+            @RequestBody PasienCustomerDTO pasienCustomerDTO) {
+        MCustomer response = pasienService.editCustomer(customerId, pasienCustomerDTO);
+        ApiResponse<?> apiResponse = new ApiResponse<>(
+                "succces edit customer", response, LocalDateTime.now(), HttpStatus.OK.value());
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @PutMapping("path/{id}")
+    public ResponseEntity<ApiResponse<?>> deletePasien() {
+        List<MCustomer> response = pasienService.deleteMultipleCustomer(null);
+        ApiResponse<?> apiResponse = new ApiResponse<>(
+                "success delete customer", null, LocalDateTime.now(), HttpStatus.OK.value());
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @DeleteMapping("/batch")
+    public ResponseEntity<ApiResponse<?>> deleteMultiplePasien(@RequestBody List<Long> customerIds) {
+        pasienService.deleteMultipleCustomer(customerIds);
+        ApiResponse<?> apiResponse = new ApiResponse<>(
+                "success delete multiple customers", null, LocalDateTime.now(), HttpStatus.OK.value());
+        return ResponseEntity.ok(apiResponse);
     }
 
 }
