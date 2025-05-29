@@ -30,10 +30,10 @@ public class MLocation extends BaseEntity {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "parent_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "parent_id", referencedColumnName = "id")
     private MLocation parent;
 
     @ManyToOne
-    @JoinColumn(name = "location_level_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "location_level_id", referencedColumnName = "id")
     private MLocationLevel mLocationLevelId;
 }

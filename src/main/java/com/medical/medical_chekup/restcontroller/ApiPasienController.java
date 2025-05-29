@@ -59,14 +59,6 @@ public class ApiPasienController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PutMapping("path/{id}")
-    public ResponseEntity<ApiResponse<?>> deletePasien() {
-        List<MCustomer> response = pasienService.deleteMultipleCustomer(null);
-        ApiResponse<?> apiResponse = new ApiResponse<>(
-                "success delete customer", null, LocalDateTime.now(), HttpStatus.OK.value());
-        return ResponseEntity.ok(apiResponse);
-    }
-
     @DeleteMapping("/batch")
     public ResponseEntity<ApiResponse<?>> deleteMultiplePasien(@RequestBody List<Long> customerIds) {
         pasienService.deleteMultipleCustomer(customerIds);

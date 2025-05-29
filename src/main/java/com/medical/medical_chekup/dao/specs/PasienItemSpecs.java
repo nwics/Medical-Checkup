@@ -12,7 +12,7 @@ public class PasienItemSpecs {
     public static Specification<MCustomer> hasKeywordName(String keyword) {
         return (root, query, criteriaBuilder) -> {
             Join<MCustomer, MBiodata> customerBiodataJoin = root.join("mBiodata");
-            return criteriaBuilder.like(criteriaBuilder.lower(customerBiodataJoin.get("fullname")),
+            return criteriaBuilder.like(criteriaBuilder.lower(customerBiodataJoin.get("fullName")),
                     "%" + keyword.toLowerCase() + "%");
         };
     }
