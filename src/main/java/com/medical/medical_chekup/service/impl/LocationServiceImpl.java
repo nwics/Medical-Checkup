@@ -144,4 +144,66 @@ public class LocationServiceImpl implements LocationService {
         }
     }
 
+    @Override
+    public List<LocationLevelResDTO> getListLocationLevel() {
+        // TODO Auto-generated method stub
+        try {
+            List<MLocationLevel> foundListLocationLevel = locationLevelRepository.findAll();
+            return foundListLocationLevel.stream().map(loc -> {
+                LocationLevelResDTO locationLevelResDTO = new LocationLevelResDTO();
+                locationLevelResDTO.setCode(loc.getAbbreviation());
+                locationLevelResDTO.setId(loc.getId());
+                locationLevelResDTO.setName(loc.getName());
+                return locationLevelResDTO;
+            }).collect(Collectors.toList());
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            throw new RuntimeException(e.getMessage());
+        }
+        // throw new UnsupportedOperationException("Unimplemented method
+        // 'getListLocationLevel'");
+    }
+
+    @Override
+    public List<ParentLocationDTO> getListParentLocation() {
+        try {
+            List<MLocation> foundListMLocation = locationRepository.findAll();
+            return foundListMLocation.stream()
+                    .filter(loc -> loc.getParent() != null) // Only include locations that have a parent
+                    .map(loc -> {
+                        ParentLocationDTO parentLocationDTO = new ParentLocationDTO();
+                        parentLocationDTO.setParentId(loc.getParent().getId());
+                        parentLocationDTO.setParentName(loc.getParent().getName());
+                        return parentLocationDTO;
+                    })
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteLocation(Long locationId) {
+        // TODO Auto-generated method stub
+        try {
+            MLocation foundLocation = locationRepository.findById(locationId).orElse(null);
+            boolean hasChild = locationRepository.existsByParentIdAndIsDeleteIsFalse(locationId);
+            if (hasChild) {
+                throw new RuntimeException("Lokasi " + foundLocation.getName() + " masih digunakan");
+            }
+            if (foundLocation == null) {
+                throw new RuntimeException("location not found");
+            }
+
+            foundLocation.setIsDelete(true);
+            foundLocation.setDeletedBy(1L);
+            foundLocation.setDeletedOn(LocalDateTime.now());
+
+            this.locationRepository.save(foundLocation);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
 }

@@ -10,4 +10,6 @@ import com.medical.medical_chekup.model.MLocation;
 public interface LocationRepository extends JpaRepository<MLocation, Long>, JpaSpecificationExecutor<MLocation> {
 
     // MLocation findByParentIdAndIsDeleteIsFalse(Long id);
+
+    boolean existsByParentIdAndIsDeleteIsFalse(Long locationId);
 }
