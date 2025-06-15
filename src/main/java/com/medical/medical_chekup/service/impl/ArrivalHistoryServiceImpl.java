@@ -16,6 +16,8 @@ import com.medical.medical_chekup.dao.AppoinmentDoneRepository;
 import com.medical.medical_chekup.dao.MedicalItemPurchaseDetailRepository;
 import com.medical.medical_chekup.dao.MedicalItemPurchaseRepository;
 import com.medical.medical_chekup.dto.ArrivalHistoryDTO;
+import com.medical.medical_chekup.dto.DoctorOfficeDTO;
+import com.medical.medical_chekup.dto.MedicalFacilityDTO;
 import com.medical.medical_chekup.dto.MedicalItemPurchaseDTO;
 import com.medical.medical_chekup.dto.PasienCustomerResDTO;
 import com.medical.medical_chekup.model.TAppointmentDone;
@@ -50,7 +52,31 @@ public class ArrivalHistoryServiceImpl implements ArrivalHistoryService {
         arrivalHistoryDTO.setPasienCustomerResDTO(pasienCustomerResDTO);
 
         // set doctor office
-        arrivalHistoryDTO.setTDoctorOffice(tAppointmentDone.getAppointment().getDoctorOffice());
+        DoctorOfficeDTO doctorOfficeDTO = new DoctorOfficeDTO();
+        doctorOfficeDTO.setDoctorName(
+                tAppointmentDone.getAppointment().getDoctorOffice().getDoctor().getBiodata().getFullName());
+        doctorOfficeDTO.setId(tAppointmentDone.getAppointment().getDoctorOffice().getId());
+        doctorOfficeDTO.setSpecialization(tAppointmentDone.getAppointment().getDoctorOffice().getSpecialization());
+        doctorOfficeDTO.setStartDate(tAppointmentDone.getAppointment().getDoctorOffice().getStartDate());
+        doctorOfficeDTO.setEndDate(tAppointmentDone.getAppointment().getDoctorOffice().getEndDate());
+        doctorOfficeDTO.setServiceUnit(tAppointmentDone.getAppointment().getDoctorOffice().getMServiceUnit().getName());
+
+        MedicalFacilityDTO medicalFacilityDTO = new MedicalFacilityDTO();
+        medicalFacilityDTO.setId(tAppointmentDone.getAppointment().getDoctorOffice().getId());
+        medicalFacilityDTO
+                .setFacilityName(tAppointmentDone.getAppointment().getDoctorOffice().getMedicalFacility().getName());
+        medicalFacilityDTO
+                .setAddress(tAppointmentDone.getAppointment().getDoctorOffice().getMedicalFacility().getFullAddress());
+        medicalFacilityDTO
+                .setPhone(tAppointmentDone.getAppointment().getDoctorOffice().getMedicalFacility().getPhone());
+        medicalFacilityDTO.setCategoryName(tAppointmentDone.getAppointment().getDoctorOffice().getMedicalFacility()
+                .getMMedicalFacilityCategory().getName());
+        medicalFacilityDTO.setLocationName(
+                tAppointmentDone.getAppointment().getDoctorOffice().getMedicalFacility().getMLocation().getName());
+
+        doctorOfficeDTO.setMedicalFacility(medicalFacilityDTO);
+
+        arrivalHistoryDTO.setDoctorOffice(doctorOfficeDTO);
 
         // set appointment date
         arrivalHistoryDTO.setAppointmentDate(tAppointmentDone.getAppointment().getAppointmentDate());

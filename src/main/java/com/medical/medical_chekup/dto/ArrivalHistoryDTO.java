@@ -21,11 +21,12 @@ public class ArrivalHistoryDTO {
 
     private Long id;
     private PasienCustomerResDTO pasienCustomerResDTO;
-    private TDoctorOffice tDoctorOffice;
-    private LocalDate appointmentDate;
+
     private String diagnosis;
+    private LocalDate appointmentDate;
     // private TAppointment tAppointment;
     // private TAppointmentDone tAppointmentDone;
     // private
     private List<MedicalItemPurchaseDTO> medicalItemPurchaseDTOs;;
+    private DoctorOfficeDTO doctorOffice;
 }
