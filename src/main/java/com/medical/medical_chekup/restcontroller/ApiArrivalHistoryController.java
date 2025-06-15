@@ -13,7 +13,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,6 +35,17 @@ public class ApiArrivalHistoryController {
                 "success get data", response, LocalDateTime.now(), HttpStatus.OK.value());
 
         return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/pdf/obat")
+    public ResponseEntity<?> getMethodName(@RequestParam Long appoinmentId) {
+
+        byte[] response = arrivalHistoryService.generateMedicalItemPdf(appoinmentId);
+        // ApiResponse<?> apiResponse = new ApiResponse<>(
+        // "Succes create pdf",response, LocalDateTime.now(),HttpStatus.OK.value());
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=daftar_obat.pdf").body(response);
+
     }
 
 }

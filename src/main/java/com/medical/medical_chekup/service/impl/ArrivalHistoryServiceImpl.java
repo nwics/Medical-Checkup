@@ -1,11 +1,17 @@
 package com.medical.medical_chekup.service.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
 import com.medical.medical_chekup.dao.AppoinmentDoneRepository;
 import com.medical.medical_chekup.dao.MedicalItemPurchaseDetailRepository;
 import com.medical.medical_chekup.dao.MedicalItemPurchaseRepository;
@@ -81,6 +87,44 @@ public class ArrivalHistoryServiceImpl implements ArrivalHistoryService {
         return appointmentDones.stream().map(this::mapToDTO).collect(Collectors.toList());
         // throw new UnsupportedOperationException("Unimplemented method
         // 'getAllArrivalHistory'");
+    }
+
+    @Override
+    public byte[] generateMedicalItemPdf(Long appointmentId) {
+        // TODO Auto-generated method stub
+        TAppointmentDone foundAppointmentDone = appoinmentDoneRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointmen ID not found"));
+        ArrivalHistoryDTO dto = mapToDTO(foundAppointmentDone);
+        List<MedicalItemPurchaseDTO> items = dto.getMedicalItemPurchaseDTOs();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        PdfWriter writer = new PdfWriter(out);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf);
+
+        document.add(new Paragraph("Daftar obat yang dibeli "));
+        document.add(new Paragraph(" "));
+
+        // create table : ID, Nama, Dosis
+        float[] columWidths = { 50F, 200F, 100F };
+        Table table = new Table(columWidths);
+        table.addCell("ID");
+        table.addCell("Nama Obat");
+        table.addCell("Dosis");
+
+        for (MedicalItemPurchaseDTO item : items) {
+            table.addCell(String.valueOf(item.getMedicalItemId()));
+            table.addCell(String.valueOf(item.getMedicalItemName()));
+            table.addCell(String.valueOf(item.getMedicalItemDosage()));
+        }
+
+        document.add(table);
+        document.close();
+        // throw new UnsupportedOperationException("Unimplemented method
+        // 'generateMedicalItemPdf'");
+        return out.toByteArray();
+
     }
 
 }
