@@ -27,7 +27,7 @@ public class TMedicalItemPurchaseDetail extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "medical_item_purchase_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private TMedicalItemPurchase medicalItemPurchaseId;
+    private TMedicalItemPurchase medicalItemPurchase;
 
     @ManyToOne
     @JoinColumn(name = "medical_item_id", referencedColumnName = "id", insertable = false, updatable = false)

@@ -1,0 +1,86 @@
+package com.medical.medical_chekup.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.medical.medical_chekup.dao.AppoinmentDoneRepository;
+import com.medical.medical_chekup.dao.MedicalItemPurchaseDetailRepository;
+import com.medical.medical_chekup.dao.MedicalItemPurchaseRepository;
+import com.medical.medical_chekup.dto.ArrivalHistoryDTO;
+import com.medical.medical_chekup.dto.MedicalItemPurchaseDTO;
+import com.medical.medical_chekup.dto.PasienCustomerResDTO;
+import com.medical.medical_chekup.model.TAppointmentDone;
+import com.medical.medical_chekup.model.TMedicalItemPurchase;
+import com.medical.medical_chekup.model.TMedicalItemPurchaseDetail;
+import com.medical.medical_chekup.service.ArrivalHistoryService;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class ArrivalHistoryServiceImpl implements ArrivalHistoryService {
+
+    private final MedicalItemPurchaseDetailRepository medicalItemPurchaseDetailRepository;
+    private final MedicalItemPurchaseRepository medicalItemPurchaseRepository;
+    private final AppoinmentDoneRepository appoinmentDoneRepository;
+
+    private ArrivalHistoryDTO mapToDTO(TAppointmentDone tAppointmentDone) {
+        ArrivalHistoryDTO arrivalHistoryDTO = new ArrivalHistoryDTO();
+        arrivalHistoryDTO.setId(tAppointmentDone.getId());
+
+        /*
+         * dirapikan lagi pada bagian Arrival History dto
+         */
+
+        // set pasien customer
+        PasienCustomerResDTO pasienCustomerResDTO = new PasienCustomerResDTO();
+        pasienCustomerResDTO
+                .setBiodataName(tAppointmentDone.getAppointment().getCustomer().getMBiodata().getFullName());
+        // pasienCustomerResDTO.setRelation(tAppointmentDone.getAppointment().getCustomer());
+        // pasienCustomerResDTO.setDob(tAppointmentDone.getAppointment().getCustomer().getDob());
+        arrivalHistoryDTO.setPasienCustomerResDTO(pasienCustomerResDTO);
+
+        // set doctor office
+        arrivalHistoryDTO.setTDoctorOffice(tAppointmentDone.getAppointment().getDoctorOffice());
+
+        // set appointment date
+        arrivalHistoryDTO.setAppointmentDate(tAppointmentDone.getAppointment().getAppointmentDate());
+        // set diagnoisis
+        arrivalHistoryDTO.setDiagnosis(tAppointmentDone.getDiagnosis());
+
+        // set medical item list purchase
+        List<MedicalItemPurchaseDTO> medicalItemPurchaseDTOs = new ArrayList<>();
+        for (TMedicalItemPurchase medicalItemPurchase : medicalItemPurchaseRepository
+                .findByCustomerId(tAppointmentDone.getAppointment().getCustomer().getId())) {
+            MedicalItemPurchaseDTO medicalItemPurchaseDTO = new MedicalItemPurchaseDTO();
+            medicalItemPurchaseDTO.setId(medicalItemPurchase.getId());
+
+            TMedicalItemPurchaseDetail medicalItemPurchaseDetail = medicalItemPurchaseDetailRepository
+                    .findByMedicalItemPurchaseId(medicalItemPurchase.getId());
+
+            medicalItemPurchaseDTO.setMedicalItemId(medicalItemPurchaseDetail.getMedicalItem().getId());
+            medicalItemPurchaseDTO.setMedicalItemName(medicalItemPurchaseDetail.getMedicalItem().getName());
+            medicalItemPurchaseDTO.setMedicalItemDosage(medicalItemPurchaseDetail.getMedicalItem().getDosage());
+
+            medicalItemPurchaseDTOs.add(medicalItemPurchaseDTO);
+
+        }
+        arrivalHistoryDTO.setMedicalItemPurchaseDTOs(medicalItemPurchaseDTOs);
+        return arrivalHistoryDTO;
+
+    }
+
+    @Override
+    public List<ArrivalHistoryDTO> getAllArrivalHistory() {
+        // TODO Auto-generated method stub
+
+        List<TAppointmentDone> appointmentDones = appoinmentDoneRepository.findAll();
+        return appointmentDones.stream().map(this::mapToDTO).collect(Collectors.toList());
+        // throw new UnsupportedOperationException("Unimplemented method
+        // 'getAllArrivalHistory'");
+    }
+
+}
