@@ -7,6 +7,7 @@ import com.medical.medical_chekup.dto.TokenDTO;
 import com.medical.medical_chekup.dto.response.ApiResponse;
 import com.medical.medical_chekup.model.TToken;
 import com.medical.medical_chekup.service.BalanceWithdrawService;
+import com.medical.medical_chekup.service.TokenService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,22 +25,38 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/api/token")
 @RequiredArgsConstructor
 public class ApiTokenController {
-    private final BalanceWithdrawService balanceWithdrawService;
+    // private final BalanceWithdrawService balanceWithdrawService;
+    private final TokenService tokenService;
 
-    @PostMapping("/create/{customerId}")
-    public ResponseEntity<ApiResponse<?>> createToken(@PathVariable Long customerId) {
-        TokenDTO response = balanceWithdrawService.createToken(customerId);
-        ApiResponse<?> apiResponse = new ApiResponse<>(
-                "success create token", response, LocalDateTime.now(), HttpStatus.OK.value());
-        return ResponseEntity.ok(apiResponse);
+    // @PostMapping("/create/{customerId}")
+    // public ResponseEntity<ApiResponse<?>> createToken(@PathVariable Long
+    // customerId) {
+    // TokenDTO response = balanceWithdrawService.createToken(customerId);
+    // ApiResponse<?> apiResponse = new ApiResponse<>(
+    // "success create token", response, LocalDateTime.now(),
+    // HttpStatus.OK.value());
+    // return ResponseEntity.ok(apiResponse);
 
-    }
+    // }
 
-    @GetMapping("/{tokenId}")
-    public ResponseEntity<ApiResponse<?>> getTokenId(@PathVariable Long tokenId) {
-        TokenDTO response = balanceWithdrawService.getToken(tokenId);
-        ApiResponse<?> apiResponse = new ApiResponse<>("success get token id", response, LocalDateTime.now(),
+    // @GetMapping("/{tokenId}")
+    // public ResponseEntity<ApiResponse<?>> getTokenId(@PathVariable Long tokenId)
+    // {
+    // TokenDTO response = balanceWithdrawService.getToken(tokenId);
+    // ApiResponse<?> apiResponse = new ApiResponse<>("success get token id",
+    // response, LocalDateTime.now(),
+    // HttpStatus.OK.value());
+    // return ResponseEntity.ok(apiResponse);
+    // }
+
+    @PostMapping("/create")
+    public ResponseEntity<ApiResponse<?>> createToken(@RequestParam String email) {
+        // TODO: process POST request
+        TokenDTO otp = tokenService.createNewOtp(email);
+        // tokenService.sendOtpToEmail(email, email)
+        ApiResponse<?> apiResponse = new ApiResponse<>("success create otp", otp, LocalDateTime.now(),
                 HttpStatus.OK.value());
+
         return ResponseEntity.ok(apiResponse);
     }
 

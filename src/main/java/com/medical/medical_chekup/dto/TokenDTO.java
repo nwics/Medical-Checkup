@@ -18,4 +18,5 @@ public class TokenDTO {
     private String token;
     private LocalDateTime expiredOn;
     private boolean isExpired;
+    private String userFor;
 }

@@ -18,6 +18,6 @@ public class DoctorListItemDTO {
     private String specialization;
     private Integer yearsOfExperience;
     private String locationName;
-    private List<String> hospitalName;
     private String availibility;
+    private List<String> hospitalName;
 }
