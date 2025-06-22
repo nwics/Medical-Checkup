@@ -9,7 +9,9 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.medical.medical_chekup.dao.TokenRepository;
+import com.medical.medical_chekup.dao.UserRepository;
 import com.medical.medical_chekup.dto.TokenDTO;
+import com.medical.medical_chekup.model.MUser;
 import com.medical.medical_chekup.model.TToken;
 import com.medical.medical_chekup.service.TokenService;
 
@@ -20,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
+
+    private final UserRepository userRepository;
 
     private final TokenRepository tokenRepository;
     private final JavaMailSender mailSender;
@@ -58,6 +62,20 @@ public class TokenServiceImpl implements TokenService {
         String otp = String.format("%06d", new Random().nextInt(999999));
         LocalDateTime expireAt = LocalDateTime.now().plusMinutes(10L);
 
+        boolean foundEmail = tokenRepository.existsByEmailAndIsDeleteIsFalse(email);
+
+        if (foundEmail == true) {
+            throw new RuntimeException("email was registered");
+        }
+        // create user
+        MUser user = new MUser();
+        user.setEmail(email);
+        user.setCreatedOn(LocalDateTime.now());
+        user.setCreatedBy(1L);
+        user.setIsDelete(false);
+        user.setIsLocked(false);
+        userRepository.save(user);
+
         TToken token = new TToken();
         token.setEmail(email);
         token.setExpiredOn(expireAt);
@@ -80,16 +98,16 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public boolean verifyOtp(String email, String otp) {
+    public String verifyOtp(String email, String otp) {
         List<TToken> foundTokenByEmail = tokenRepository.findByEmailAndIsExpiredIsFalse(email);
-        TToken temp = foundTokenByEmail.get(0);
 
-        if (temp.getToken().equals(otp) & temp.getExpiredOn().isAfter(LocalDateTime.now())) {
+        TToken temp = foundTokenByEmail.get(0);
+        if (temp.getToken().trim().equals(otp) && temp.getExpiredOn().isAfter(LocalDateTime.now())) {
             temp.setExpired(true);
             tokenRepository.save(temp);
-            return true;
+            return "success";
         } else {
-            return false;
+            return "failed";
         }
         // TODO Auto-generated method stub
         // throw new UnsupportedOperationException("Unimplemented method 'verifyOtp'");

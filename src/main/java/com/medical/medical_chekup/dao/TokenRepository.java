@@ -13,4 +13,7 @@ public interface TokenRepository extends JpaRepository<TToken, Long> {
     TToken findByCustomerIdAndIsDeleteIsFalse(Long customerId);
 
     List<TToken> findByEmailAndIsExpiredIsFalse(String email);
+
+    boolean existsByEmailAndIsDeleteIsFalse(String email);
+
 }

@@ -60,4 +60,12 @@ public class ApiTokenController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    @PostMapping("/verify")
+    public ResponseEntity<ApiResponse<?>> verifyToken(@RequestParam String email, @RequestParam String token) {
+        String verify = tokenService.verifyOtp(email, token);
+        ApiResponse<?> apiResponse = new ApiResponse<>(
+                "success verify token", verify, LocalDateTime.now(), HttpStatus.OK.value());
+        return ResponseEntity.ok(apiResponse);
+    }
+
 }

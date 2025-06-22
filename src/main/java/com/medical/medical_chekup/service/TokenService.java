@@ -9,6 +9,6 @@ public interface TokenService {
 
     TokenDTO createNewOtp(String email);
 
-    boolean verifyOtp(String email, String otp);
+    String verifyOtp(String email, String otp);
 
 }

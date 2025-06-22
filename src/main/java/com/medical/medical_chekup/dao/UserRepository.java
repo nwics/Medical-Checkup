@@ -9,4 +9,6 @@ import com.medical.medical_chekup.model.MUser;
 public interface UserRepository extends JpaRepository<MUser, Long> {
 
     Boolean existsByIdAndIsDeleteIsFalse(Long id);
+
+    MUser findByEmailAndIsDeleteIsFalse(String email);
 }
