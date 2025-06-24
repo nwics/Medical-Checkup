@@ -1,5 +1,6 @@
 package com.medical.medical_chekup.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -21,7 +22,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class MUser extends BaseEntity {
+public class MUser extends BaseEntity implements Serializable {
 
     @Id
     @Column(name = "id")

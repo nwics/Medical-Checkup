@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@RequestMapping("/api/location")
+@RequestMapping("${api.base.url}/location")
 @RestController
 @RequiredArgsConstructor
 public class ApiLocationController {
