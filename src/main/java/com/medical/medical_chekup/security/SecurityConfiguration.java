@@ -71,10 +71,10 @@ public class SecurityConfiguration {
         return http
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers(HttpMethod.GET, this.baseUrl + "/pasien/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, this.baseUrl + "/user/**").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/user").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers(HttpMethod.PUT, this.baseUrl + "/user/**").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, this.baseUrl + "/user/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.GET, this.baseUrl + "/users/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, this.baseUrl + "/users").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, this.baseUrl + "/users/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, this.baseUrl + "/users/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions().disable())
                 .csrf(csrf -> csrf.disable())

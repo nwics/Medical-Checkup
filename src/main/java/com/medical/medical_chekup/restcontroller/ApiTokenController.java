@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("/api/token")
+@RequestMapping("${api.base.url}/token")
 @RequiredArgsConstructor
 public class ApiTokenController {
     // private final BalanceWithdrawService balanceWithdrawService;

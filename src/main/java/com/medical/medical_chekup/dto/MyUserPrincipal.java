@@ -18,13 +18,17 @@ public class MyUserPrincipal implements UserDetails {
 
     private MUser user;
 
+    public MyUserPrincipal(MUser user) {
+        this.user = user;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // TODO Auto-generated method stub
         // throw new UnsupportedOperationException("Unimplemented method
         // 'getAuthorities'");
         return Arrays.stream(StringUtils.tokenizeToStringArray(this.user.getRole().getCode(), " "))
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                .map(role -> new SimpleGrantedAuthority(role))
                 .toList();
     }
 

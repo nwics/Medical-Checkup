@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("/api/balance-withdraw")
+@RequestMapping("${api.base.url}/balance-withdraw")
 @RequiredArgsConstructor
 public class ApiBalanceWithdrawController {
 

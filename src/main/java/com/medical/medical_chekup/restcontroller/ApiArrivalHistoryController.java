@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/arrivalhistory")
+@RequestMapping("${api.base.url}/arrivalhistory")
 public class ApiArrivalHistoryController {
     private final ArrivalHistoryService arrivalHistoryService;
 

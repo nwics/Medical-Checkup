@@ -2,7 +2,7 @@ package com.medical.medical_chekup.service;
 
 import com.medical.medical_chekup.dto.UserDTO;
 
-public interface UserService {
+public interface UserServicewrong {
 
     // String generateOtp(Long id);
 

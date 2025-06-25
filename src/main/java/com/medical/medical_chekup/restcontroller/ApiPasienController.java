@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
-@RequestMapping("/api/pasien")
+@RequestMapping("${api.base.url}/pasien")
 @RequiredArgsConstructor
 public class ApiPasienController {
 

@@ -1,5 +1,7 @@
 package com.medical.medical_chekup.dao;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +12,5 @@ public interface UserRepository extends JpaRepository<MUser, Long> {
 
     Boolean existsByIdAndIsDeleteIsFalse(Long id);
 
-    MUser findByEmailAndIsDeleteIsFalse(String email);
+    Optional<MUser> findByEmailAndIsDeleteIsFalse(String email);
 }
