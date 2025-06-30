@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+// import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,11 +31,11 @@ public class MUser extends BaseEntity implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "biodata_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "biodata_id", referencedColumnName = "id")
     private MBiodata biodata;
 
     @ManyToOne
-    @JoinColumn(name = "role_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
     private MRole role;
 
     @Column(name = "email", length = 100)

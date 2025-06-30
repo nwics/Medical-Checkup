@@ -81,6 +81,10 @@ public class UserService implements UserDetailsService {
     // throw new UnsupportedOperationException("Unimplemented method 'createUser'");
     // }
 
+    // public String generateOTP(Long id){
+
+    // }
+
     public List<MUser> findAll() {
         // System.out.println("=== DEBUG: Executing findAll in service ===");
         List<MUser> users = userRepository.findAll();
@@ -96,6 +100,14 @@ public class UserService implements UserDetailsService {
 
     public MUser save(MUser user) {
         MUser newUser = new MUser();
+        MUser foundUserByEmail = userRepository.findByEmailAndIsDeleteIsFalse(user.getEmail()).orElse(null);
+        if (foundUserByEmail != null) {
+            new RuntimeException("Email is registered");
+        }
+        newUser.setEmail(user.getEmail());
+        // if (condition) {
+
+        // }
         newUser.setPassword(user.getPassword());
         return this.userRepository.save(newUser);
     }

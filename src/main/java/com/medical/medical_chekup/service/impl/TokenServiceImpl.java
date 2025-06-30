@@ -6,11 +6,17 @@ import java.util.Random;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.medical.medical_chekup.dao.BiodataRepository;
+import com.medical.medical_chekup.dao.RoleRepository;
 import com.medical.medical_chekup.dao.TokenRepository;
 import com.medical.medical_chekup.dao.UserRepository;
 import com.medical.medical_chekup.dto.TokenDTO;
+import com.medical.medical_chekup.model.MBiodata;
+import com.medical.medical_chekup.model.MRole;
 import com.medical.medical_chekup.model.MUser;
 import com.medical.medical_chekup.model.TToken;
 import com.medical.medical_chekup.service.TokenService;
@@ -24,8 +30,9 @@ import lombok.RequiredArgsConstructor;
 public class TokenServiceImpl implements TokenService {
 
     private final UserRepository userRepository;
-
     private final TokenRepository tokenRepository;
+    private final RoleRepository roleRepository;
+    private final BiodataRepository biodataRepository;
     private final JavaMailSender mailSender;
 
     private TokenDTO mapDto(TToken token) {
@@ -111,6 +118,61 @@ public class TokenServiceImpl implements TokenService {
         }
         // TODO Auto-generated method stub
         // throw new UnsupportedOperationException("Unimplemented method 'verifyOtp'");
+
+    }
+
+    @Override
+    public String createPassword(String password, String email) {
+        // TODO Auto-generated method stub
+        // throw new UnsupportedOperationException("Unimplemented method
+        // 'createPassword'");
+        try {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+
+            MUser foundMUser = userRepository.findByEmailAndIsDeleteIsFalse(email).orElse(null);
+            if (foundMUser == null) {
+                new RuntimeException("user not found");
+            }
+            foundMUser.setModifiedBy(1L);
+            foundMUser.setModifiedOn(LocalDateTime.now());
+            String encodePassword = encoder.encode(password);
+            foundMUser.setPassword(encodePassword);
+            this.userRepository.save(foundMUser);
+            return "success create password";
+        } catch (Exception e) {
+            // TODO: handle exception
+            throw new RuntimeException(e.getMessage());
+        }
+
+    }
+
+    @Override
+    public MUser setBiodataUser(String email, MUser user) {
+        // TODO Auto-generated method stub
+        // throw new UnsupportedOperationException("Unimplemented method 'createUser'");
+        MUser foundMUser = userRepository.findByEmailAndIsDeleteIsFalse(email).orElse(null);
+        if (foundMUser == null) {
+            throw new RuntimeException("user not found");
+        }
+        MBiodata biodata = new MBiodata();
+        biodata.setFullName(user.getBiodata().getFullName());
+        biodata.setMobilePhone(user.getBiodata().getMobilePhone());
+        biodata.setCreatedBy(1L);
+        biodata.setCreatedOn(LocalDateTime.now());
+        biodata.setIsDelete(false);
+        this.biodataRepository.save(biodata);
+
+        foundMUser.setBiodata(biodata);
+        MRole foundRole = roleRepository.findById(user.getRole().getId()).orElse(null);
+        if (foundRole == null) {
+            throw new RuntimeException("role not found");
+        }
+        foundMUser.setRole(foundRole);
+        foundMUser.setModifiedBy(1L);
+        foundMUser.setModifiedOn(LocalDateTime.now());
+
+        this.userRepository.save(foundMUser);
+        return foundMUser;
 
     }
 

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.medical.medical_chekup.dto.TokenDTO;
 import com.medical.medical_chekup.dto.response.ApiResponse;
+import com.medical.medical_chekup.model.MUser;
 import com.medical.medical_chekup.model.TToken;
 import com.medical.medical_chekup.service.BalanceWithdrawService;
 import com.medical.medical_chekup.service.TokenService;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("${api.base.url}/token")
@@ -65,6 +67,30 @@ public class ApiTokenController {
         String verify = tokenService.verifyOtp(email, token);
         ApiResponse<?> apiResponse = new ApiResponse<>(
                 "success verify token", verify, LocalDateTime.now(), HttpStatus.OK.value());
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @PutMapping("/setPassword/{email}")
+    public ResponseEntity<ApiResponse<?>> setPassword(@PathVariable String email, @RequestParam String password) {
+        // TODO: process PUT request
+
+        String response = tokenService.createPassword(password, email);
+        ApiResponse<?> apiResponse = new ApiResponse<>("success create password", response, LocalDateTime.now(),
+                HttpStatus.OK.value());
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // perlu di refactor lagi
+    @PutMapping("/setBiodata/{email}")
+    public ResponseEntity<ApiResponse<?>> setBiodata(@PathVariable String email, @RequestBody MUser user) {
+        // TODO: process PUT request
+
+        // return entity;
+        MUser response = tokenService.setBiodataUser(email, user);
+        ApiResponse<?> apiResponse = new ApiResponse<>("success set biodata", response, LocalDateTime.now(),
+                HttpStatus.OK.value());
+
         return ResponseEntity.ok(apiResponse);
     }
 
