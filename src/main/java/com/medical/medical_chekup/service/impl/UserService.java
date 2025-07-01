@@ -17,7 +17,7 @@ import com.medical.medical_chekup.dto.MyUserPrincipal;
 import com.medical.medical_chekup.dto.UserDTO;
 import com.medical.medical_chekup.model.MUser;
 import com.medical.medical_chekup.model.TToken;
-import com.medical.medical_chekup.service.TokenService;
+import com.medical.medical_chekup.service.RegisterService;
 import com.medical.medical_chekup.service.UserServicewrong;
 
 import lombok.RequiredArgsConstructor;

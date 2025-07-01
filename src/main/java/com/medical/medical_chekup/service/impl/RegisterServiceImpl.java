@@ -19,7 +19,7 @@ import com.medical.medical_chekup.model.MBiodata;
 import com.medical.medical_chekup.model.MRole;
 import com.medical.medical_chekup.model.MUser;
 import com.medical.medical_chekup.model.TToken;
-import com.medical.medical_chekup.service.TokenService;
+import com.medical.medical_chekup.service.RegisterService;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class TokenServiceImpl implements TokenService {
+public class RegisterServiceImpl implements RegisterService {
 
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;

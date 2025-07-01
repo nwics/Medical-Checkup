@@ -5,7 +5,7 @@ import com.medical.medical_chekup.model.MUser;
 
 import jakarta.mail.MessagingException;
 
-public interface TokenService {
+public interface RegisterService {
     String sendOtpToEmail(String email, String otp) throws MessagingException;
 
     TokenDTO createNewOtp(String email);

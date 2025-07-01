@@ -8,7 +8,8 @@ import com.medical.medical_chekup.dto.response.ApiResponse;
 import com.medical.medical_chekup.model.MUser;
 import com.medical.medical_chekup.model.TToken;
 import com.medical.medical_chekup.service.BalanceWithdrawService;
-import com.medical.medical_chekup.service.TokenService;
+import com.medical.medical_chekup.service.RegisterService;
+// import com.medical.medical_chekup.service.TokenService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +29,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequiredArgsConstructor
 public class ApiTokenController {
     // private final BalanceWithdrawService balanceWithdrawService;
-    private final TokenService tokenService;
+    private final RegisterService registerService;
 
     // @PostMapping("/create/{customerId}")
     // public ResponseEntity<ApiResponse<?>> createToken(@PathVariable Long
@@ -54,8 +55,8 @@ public class ApiTokenController {
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<?>> createToken(@RequestParam String email) {
         // TODO: process POST request
-        TokenDTO otp = tokenService.createNewOtp(email);
-        // tokenService.sendOtpToEmail(email, email)
+        TokenDTO otp = registerService.createNewOtp(email);
+        // registerService.sendOtpToEmail(email, email)
         ApiResponse<?> apiResponse = new ApiResponse<>("success create otp", otp, LocalDateTime.now(),
                 HttpStatus.OK.value());
 
@@ -64,7 +65,7 @@ public class ApiTokenController {
 
     @PostMapping("/verify")
     public ResponseEntity<ApiResponse<?>> verifyToken(@RequestParam String email, @RequestParam String token) {
-        String verify = tokenService.verifyOtp(email, token);
+        String verify = registerService.verifyOtp(email, token);
         ApiResponse<?> apiResponse = new ApiResponse<>(
                 "success verify token", verify, LocalDateTime.now(), HttpStatus.OK.value());
         return ResponseEntity.ok(apiResponse);
@@ -74,7 +75,7 @@ public class ApiTokenController {
     public ResponseEntity<ApiResponse<?>> setPassword(@PathVariable String email, @RequestParam String password) {
         // TODO: process PUT request
 
-        String response = tokenService.createPassword(password, email);
+        String response = registerService.createPassword(password, email);
         ApiResponse<?> apiResponse = new ApiResponse<>("success create password", response, LocalDateTime.now(),
                 HttpStatus.OK.value());
 
@@ -87,7 +88,7 @@ public class ApiTokenController {
         // TODO: process PUT request
 
         // return entity;
-        MUser response = tokenService.setBiodataUser(email, user);
+        MUser response = registerService.setBiodataUser(email, user);
         ApiResponse<?> apiResponse = new ApiResponse<>("success set biodata", response, LocalDateTime.now(),
                 HttpStatus.OK.value());
 
