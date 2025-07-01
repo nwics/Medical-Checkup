@@ -25,9 +25,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
-@RequestMapping("${api.base.url}/token")
+@RequestMapping("${api.base.url}/register")
 @RequiredArgsConstructor
-public class ApiTokenController {
+public class ApiRegisterController {
     // private final BalanceWithdrawService balanceWithdrawService;
     private final RegisterService registerService;
 
