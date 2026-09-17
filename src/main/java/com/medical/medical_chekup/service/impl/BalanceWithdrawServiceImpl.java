@@ -24,6 +24,7 @@ import com.medical.medical_chekup.model.TCustomerWallet;
 import com.medical.medical_chekup.model.TCustomerWalletWithdraw;
 import com.medical.medical_chekup.model.TToken;
 import com.medical.medical_chekup.model.MCustomer;
+import com.medical.medical_chekup.service.AuditTrailService;
 import com.medical.medical_chekup.service.BalanceWithdrawService;
 
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,7 @@ public class BalanceWithdrawServiceImpl implements BalanceWithdrawService {
     private final CustomerRepository customerRepository;
     private final CustomerWalletRepository customerWalletRepository;
     private final CustomerWalletWithdrawRepository customerWalletWithdrawRepository;
+    private final AuditTrailService auditTrailService;
 
     private DefaultSaldoDTO mapToDTO(MWalletDefaultNominal defaultNominal) {
         DefaultSaldoDTO defaultSaldoDTO = new DefaultSaldoDTO();
@@ -115,6 +117,10 @@ public class BalanceWithdrawServiceImpl implements BalanceWithdrawService {
             newCustomNominal.setCreatedBy(1L);
 
             TCustomerCustomNominal saved = customNominalCustomerRepository.save(newCustomNominal);
+
+            auditTrailService.record("CREATE", "SALDO", saved.getId(),
+                    "Membuat nominal saldo custom untuk customer ID " + customNominal.getCustomerId());
+
             return saved;
         } catch (Exception e) {
             throw new RuntimeException("Failed to create custom nominal: " + e.getMessage());
@@ -199,6 +205,10 @@ public class BalanceWithdrawServiceImpl implements BalanceWithdrawService {
             customerWalletRepository.save(foundCustomerWallet);
 
             TCustomerWalletWithdraw save = customerWalletWithdrawRepository.save(customerWalletWithdraw);
+
+            auditTrailService.record("WITHDRAW", "SALDO", save.getId(),
+                    "Melakukan withdraw untuk customer ID " + customerId);
+
             return save;
 
         } catch (Exception e) {

@@ -79,6 +79,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, this.baseUrl + "/users").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT, this.baseUrl + "/users/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, this.baseUrl + "/users/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, this.baseUrl + "/audittrail/**").hasAuthority("ADMIN")
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",

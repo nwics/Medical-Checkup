@@ -23,6 +23,7 @@ import com.medical.medical_chekup.dto.ParentLocationDTO;
 import com.medical.medical_chekup.dto.response.ApiResponsePagination;
 import com.medical.medical_chekup.model.MLocation;
 import com.medical.medical_chekup.model.MLocationLevel;
+import com.medical.medical_chekup.service.AuditTrailService;
 import com.medical.medical_chekup.service.LocationService;
 
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ public class LocationServiceImpl implements LocationService {
 
     private final LocationRepository locationRepository;
     private final LocationLevelRepository locationLevelRepository;
+    private final AuditTrailService auditTrailService;
 
     private LocationResDTO mapToDTO(MLocation mLocation) {
         LocationResDTO locationResDTO = new LocationResDTO();
@@ -138,6 +140,10 @@ public class LocationServiceImpl implements LocationService {
             mLocation.setMLocationLevelId(locationLevel);
 
             MLocation savedLocation = locationRepository.save(mLocation);
+
+            auditTrailService.record("CREATE", "LOCATION", savedLocation.getId(),
+                    "Membuat lokasi " + savedLocation.getName());
+
             return mapToDTO(savedLocation);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -201,6 +207,9 @@ public class LocationServiceImpl implements LocationService {
             foundLocation.setDeletedOn(LocalDateTime.now());
 
             this.locationRepository.save(foundLocation);
+
+            auditTrailService.record("DELETE", "LOCATION", locationId,
+                    "Menghapus lokasi " + foundLocation.getName());
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

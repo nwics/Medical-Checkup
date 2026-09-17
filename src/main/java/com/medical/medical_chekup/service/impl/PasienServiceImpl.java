@@ -33,6 +33,7 @@ import com.medical.medical_chekup.model.MCustomer;
 import com.medical.medical_chekup.model.MCustomerMember;
 import com.medical.medical_chekup.model.MCustomerRelation;
 import com.medical.medical_chekup.model.TAppointment;
+import com.medical.medical_chekup.service.AuditTrailService;
 import com.medical.medical_chekup.service.PasienService;
 
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,7 @@ public class PasienServiceImpl implements PasienService {
     private final CustomerRelationRepository customerRelationRepository;
     private final AppointmentRepository appointmentRepository;
     private final CustomerChatRepository customerChatRepository;
+    private final AuditTrailService auditTrailService;
 
     private PasienCustomerDTO mapToDto(MCustomer mCustomer) {
         PasienCustomerDTO pasienCustomerDTO = new PasienCustomerDTO();
@@ -138,6 +140,9 @@ public class PasienServiceImpl implements PasienService {
             // Save customer member
             customerMemberRepository.save(customerMember);
 
+            auditTrailService.record("CREATE", "PASIEN", savedCustomer.getId(),
+                    "Membuat pasien ID " + savedCustomer.getId());
+
             return savedCustomer;
         } catch (Exception e) {
             throw new RuntimeException("Failed to create customer: " + e.getMessage());
@@ -221,6 +226,10 @@ public class PasienServiceImpl implements PasienService {
             customer.setMBloodGroup(foundBloodGroup);
 
             this.pasienCustomerRepository.save(customer);
+
+            auditTrailService.record("UPDATE", "PASIEN", customerId,
+                    "Mengubah data pasien ID " + customerId);
+
             return customer;
         } catch (Exception e) {
             // TODO: handle exception
@@ -240,6 +249,8 @@ public class PasienServiceImpl implements PasienService {
                 customer.setDeletedOn(LocalDateTime.now());
             });
             pasienCustomerRepository.saveAll(mCustomers);
+            mCustomers.forEach(customer -> auditTrailService.record("DELETE", "PASIEN", customer.getId(),
+                    "Menghapus pasien ID " + customer.getId()));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

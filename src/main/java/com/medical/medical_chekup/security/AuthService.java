@@ -13,6 +13,7 @@ import com.medical.medical_chekup.dao.UserRepository;
 import com.medical.medical_chekup.dto.MyUserPrincipal;
 import com.medical.medical_chekup.dto.UserDTO;
 import com.medical.medical_chekup.model.MUser;
+import com.medical.medical_chekup.service.AuditTrailService;
 
 @Service
 public class AuthService {
@@ -23,11 +24,14 @@ public class AuthService {
 
     private final UserRepository userRepository;
 
+    private final AuditTrailService auditTrailService;
+
     public AuthService(JwtProvider jwtProvider, UserToUserDtoConverter userDtoConverter,
-            UserRepository userRepository) {
+            UserRepository userRepository, AuditTrailService auditTrailService) {
         this.jwtProvider = jwtProvider;
         this.userDtoConverter = userDtoConverter;
         this.userRepository = userRepository;
+        this.auditTrailService = auditTrailService;
     }
 
     public Map<String, Object> createLoginInfo(Authentication authentication) {
@@ -43,6 +47,9 @@ public class AuthService {
         UserDTO userDTO = this.userDtoConverter.convert(foundUser);
 
         String token = this.jwtProvider.createToken(authentication);
+
+        this.auditTrailService.record("LOGIN", "USER", foundUser.getId(),
+                "User " + foundUser.getEmail() + " berhasil login");
 
         Map<String, Object> loginResultMap = new HashMap<>();
 
